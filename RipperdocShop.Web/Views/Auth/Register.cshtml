@@ -11,23 +11,22 @@
         <div>
           <label asp-for="Email" for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
             email</label>
-          <input asp-for="Email" type="email" name="email" id="email"
+          <input asp-for="Email" type="email" id="email"
                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                 placeholder="name@company.com" required="">
+                 placeholder="v@example.com" required="">
           <span asp-validation-for="Email"></span>
         </div>
         <div>
-          <label asp-for="Password" for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-          <input asp-for="Password" type="password" name="password" id="password" placeholder="••••••••"
+          <label asp-for="Password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+          <input asp-for="Password" type="password" id="password" placeholder="••••••••"
                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                  required="">
           <span asp-validation-for="Password"></span>
         </div>
         <div>
-          <label asp-for="ConfirmPassword" for="confirm-password"
-                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm
-            password</label>
-          <input asp-for="Password" type="password" name="confirm-password" id="confirm-password" placeholder="••••••••"
+          <label asp-for="ConfirmPassword"
+                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm password</label>
+          <input asp-for="ConfirmPassword" type="password" id="confirm-password" placeholder="••••••••"
                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                  required="">
           <span asp-validation-for="ConfirmPassword"></span>
