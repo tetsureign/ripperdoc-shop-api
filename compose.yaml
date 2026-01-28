@@ -1,13 +1,47 @@
-﻿services:
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
   ripperdocshop.api:
     image: ripperdocshop.api
     build:
       context: .
       dockerfile: RipperdocShop.Api/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - Jwt__Secret=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER}
+      - Jwt__Audience=${JWT_AUDIENCE}
+      - Admin__Email=${ADMIN_EMAIL}
+      - Admin__Password=${ADMIN_PASSWORD}
+      - AdminSite__URL=http://localhost:5002
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+    depends_on:
+      - postgres
 
   ripperdocshop.web:
     image: ripperdocshop.web
     build:
       context: .
       dockerfile: RipperdocShop.Web/Dockerfile
-      
+    environment:
+      - CustomerApi__URL=${API_URL}
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5002:8080"
+    depends_on:
+      - ripperdocshop.api
+
+volumes:
+  postgres_data:

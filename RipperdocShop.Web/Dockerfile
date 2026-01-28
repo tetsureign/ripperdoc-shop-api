@@ -1,4 +1,4 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
@@ -8,6 +8,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["RipperdocShop.Web/RipperdocShop.Web.csproj", "RipperdocShop.Web/"]
+COPY ["RipperdocShop.Shared/RipperdocShop.Shared.csproj", "RipperdocShop.Shared/"]
 RUN dotnet restore "RipperdocShop.Web/RipperdocShop.Web.csproj"
 COPY . .
 WORKDIR "/src/RipperdocShop.Web"
