@@ -22,7 +22,7 @@ services:
       - Jwt__Audience=${JWT_AUDIENCE}
       - Admin__Email=${ADMIN_EMAIL}
       - Admin__Password=${ADMIN_PASSWORD}
-      - AdminSite__URL=http://localhost:5002
+      - AdminSite__URL=http://localhost:5173
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "5000:8080"
