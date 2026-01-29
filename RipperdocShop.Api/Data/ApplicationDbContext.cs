@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RipperdocShop.Api.Models.Entities;
@@ -99,7 +99,7 @@ public class ApplicationDbContext(
             
             e.HasCheckConstraint(
                 "CK_ProductRatings_Score_Range",
-                "[score] >= 1 AND [score] <= 5"
+                "score >= 1 AND score <= 5"
             );
 
             e.HasIndex(r => new { r.ProductId, r.UserId })

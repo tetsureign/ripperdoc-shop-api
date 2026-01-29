@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -32,7 +32,7 @@ namespace RipperdocShop.Api.Migrations
             migrationBuilder.AddCheckConstraint(
                 name: "CK_ProductRatings_Score_Range",
                 table: "product_ratings",
-                sql: "[score] >= 1 AND [score] <= 5");
+                sql: "score >= 1 AND score <= 5");
         }
 
         /// <inheritdoc />
