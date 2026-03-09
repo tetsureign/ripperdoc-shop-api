@@ -1,8 +1,17 @@
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpOverrides;
 using RipperdocShop.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Forwarded Headers for proxies (ALB, Nginx, etc.)
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
 
 builder.Services.AddHttpClient("CustomerApi", client =>
 {
@@ -31,6 +40,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+app.UseForwardedHeaders();
+
+app.MapGet("/health", () => Results.Ok("Healthy"));
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

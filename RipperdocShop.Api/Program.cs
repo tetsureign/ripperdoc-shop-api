@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +15,14 @@ using RipperdocShop.Api.Services.Core;
 using RipperdocShop.Api.Services.Customer;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Forwarded Headers for proxies (ALB, Nginx, etc.)
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
 
 var jwtSecret = builder.Configuration["Jwt:Secret"];
 
@@ -144,6 +153,10 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+app.UseForwardedHeaders();
+
+app.MapGet("/health", () => Results.Ok("Healthy"));
 
 app.UseStaticFiles();
 
