@@ -4,7 +4,7 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["RipperdocShop.Web/RipperdocShop.Web.csproj", "RipperdocShop.Web/"]
@@ -16,7 +16,10 @@ RUN dotnet build "./RipperdocShop.Web.csproj" -c $BUILD_CONFIGURATION -o /app/bu
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./RipperdocShop.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+ARG TARGETARCH
+RUN arch="$TARGETARCH" && \
+    if [ "$arch" = "amd64" ]; then arch="x64"; fi && \
+    dotnet publish "./RipperdocShop.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish -a "$arch" /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
