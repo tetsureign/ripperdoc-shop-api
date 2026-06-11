@@ -7,12 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RipperdocShop.Api.Data;
 using RipperdocShop.Api.Interceptors;
-using RipperdocShop.Api.Mapping;
 using RipperdocShop.Api.Models.Identities;
-using RipperdocShop.Api.Services;
-using RipperdocShop.Api.Services.Admin;
-using RipperdocShop.Api.Services.Core;
-using RipperdocShop.Api.Services.Customer;
+using RipperdocShop.Api.Modules;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,7 +41,6 @@ builder.Services.AddIdentity<AppUser, AppRole>(options => options.SignIn.Require
 
 // AutoMapper services
 builder.Services.AddAutoMapper(typeof(Program));
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 // Logger
 builder.Services.AddHttpLogging(options => { });
@@ -60,24 +55,8 @@ if (builder.Environment.IsDevelopment())
     });
 }
 
-// App Services
-builder.Services.AddScoped<IBrandCoreService, BrandCoreService>();
-builder.Services.AddScoped<IAdminBrandService, AdminBrandService>();
-builder.Services.AddScoped<ICategoryCoreService, CategoryCoreService>();
-builder.Services.AddScoped<IAdminCategoryService, AdminCategoryService>();
-builder.Services.AddScoped<IProductCoreService, ProductCoreService>();
-builder.Services.AddScoped<IAdminProductService, AdminProductService>();
-builder.Services.AddScoped<IProductRatingCoreService, ProductRatingCoreService>();
-builder.Services.AddScoped<IAdminProductRatingService, AdminProductRatingService>();
-builder.Services.AddScoped<IAdminCustomerListService, AdminCustomerListService>();
-builder.Services.AddScoped<IImageService, ImageService>();
-builder.Services.AddScoped<JwtService>();
-
-builder.Services.AddScoped<ICustomerProductService, CustomerProductService>();
-builder.Services.AddScoped<ICustomerCategoryService, CustomerCategoryService>();
-builder.Services.AddScoped<ICustomerBrandService, CustomerBrandService>();
-builder.Services.AddScoped<ICustomerProductRatingService, CustomerProductRatingService>();
-builder.Services.AddScoped<IUserService, UserService>();
+// App modules
+builder.Services.AddAppModules();
 
 builder.Services.AddControllers();
 

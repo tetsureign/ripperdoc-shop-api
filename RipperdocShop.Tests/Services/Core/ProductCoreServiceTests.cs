@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RipperdocShop.Api.Data;
 using RipperdocShop.Api.Models.Entities;
-using RipperdocShop.Api.Services.Core;
+using RipperdocShop.Api.Modules.Products.Core;
 using RipperdocShop.Tests.TestUtils;
 
 namespace RipperdocShop.Tests.Services.Core;
