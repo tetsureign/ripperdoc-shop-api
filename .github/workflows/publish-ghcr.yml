@@ -24,9 +24,7 @@ jobs:
       matrix:
         include:
           - image_name: ripperdocshop-api
-            dockerfile: RipperdocShop.Api/Dockerfile
-          - image_name: ripperdocshop-web
-            dockerfile: RipperdocShop.Web/Dockerfile
+            dockerfile: backend/RipperdocShop.Api/Dockerfile
 
     steps:
       - name: Checkout

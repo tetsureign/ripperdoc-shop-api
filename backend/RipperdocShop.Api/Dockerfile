@@ -7,11 +7,11 @@ EXPOSE 8081
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["RipperdocShop.Api/RipperdocShop.Api.csproj", "RipperdocShop.Api/"]
-COPY ["RipperdocShop.Shared/RipperdocShop.Shared.csproj", "RipperdocShop.Shared/"]
-RUN dotnet restore "RipperdocShop.Api/RipperdocShop.Api.csproj"
+COPY ["backend/RipperdocShop.Api/RipperdocShop.Api.csproj", "backend/RipperdocShop.Api/"]
+COPY ["backend/RipperdocShop.Shared/RipperdocShop.Shared.csproj", "backend/RipperdocShop.Shared/"]
+RUN dotnet restore "backend/RipperdocShop.Api/RipperdocShop.Api.csproj"
 COPY . .
-WORKDIR "/src/RipperdocShop.Api"
+WORKDIR "/src/backend/RipperdocShop.Api"
 RUN dotnet build "./RipperdocShop.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
