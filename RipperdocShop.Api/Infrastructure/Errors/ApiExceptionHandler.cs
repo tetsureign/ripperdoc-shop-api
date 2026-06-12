@@ -20,7 +20,13 @@ public class ApiExceptionHandler(ILogger<ApiExceptionHandler> logger) : IExcepti
         };
 
         if (statusCode == StatusCodes.Status500InternalServerError)
-            logger.LogError(exception, "Unhandled exception while processing {Path}", httpContext.Request.Path);
+        {
+            var safePath = httpContext.Request.Path.Value?
+                .Replace("\r", string.Empty)
+                .Replace("\n", string.Empty) ?? string.Empty;
+
+            logger.LogError(exception, "Unhandled exception while processing {Path}", safePath);
+        }
 
         var problem = new ProblemDetails
         {
