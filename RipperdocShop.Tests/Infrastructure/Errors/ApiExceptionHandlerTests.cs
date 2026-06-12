@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using RipperdocShop.Api.Infrastructure.Errors;
 
@@ -50,11 +51,74 @@ public class ApiExceptionHandlerTests
         Assert.Equal("/api/test", problem.Instance);
     }
 
+    [Fact]
+    public async Task TryHandleAsync_Logs_Only_Sanitized_Context_For_Unhandled_Exception()
+    {
+        var logger = new CapturingLogger<ApiExceptionHandler>();
+        var handler = new ApiExceptionHandler(logger);
+        var context = new DefaultHttpContext
+        {
+            Request =
+            {
+                Path = "/api/test\r\nforged-entry"
+            },
+            Response =
+            {
+                Body = new MemoryStream()
+            }
+        };
+        var exception = new Exception("attacker-controlled\r\nexception-message");
+
+        await handler.TryHandleAsync(context, exception, CancellationToken.None);
+
+        Assert.Equal(LogLevel.Error, logger.LastLevel);
+        Assert.Null(logger.LastException);
+        Assert.DoesNotContain("\r", logger.LastMessage);
+        Assert.DoesNotContain("\n", logger.LastMessage);
+        Assert.Contains("/api/testforged-entry", logger.LastMessage);
+        Assert.DoesNotContain("attacker-controlled", logger.LastMessage);
+    }
+
     private static Exception CreateException(Type exceptionType, string message)
     {
         if (exceptionType == typeof(ArgumentOutOfRangeException))
             return new ArgumentOutOfRangeException("value", message);
 
         return (Exception)Activator.CreateInstance(exceptionType, message)!;
+    }
+}
+
+
+internal sealed class CapturingLogger<T> : ILogger<T>
+{
+    public LogLevel LastLevel { get; private set; }
+
+    public string LastMessage { get; private set; } = string.Empty;
+
+    public Exception? LastException { get; private set; }
+
+    public IDisposable? BeginScope<TState>(TState state) where TState : notnull => NullScope.Instance;
+
+    public bool IsEnabled(LogLevel logLevel) => true;
+
+    public void Log<TState>(
+        LogLevel logLevel,
+        EventId eventId,
+        TState state,
+        Exception? exception,
+        Func<TState, Exception?, string> formatter)
+    {
+        LastLevel = logLevel;
+        LastException = exception;
+        LastMessage = formatter(state, exception);
+    }
+
+    private sealed class NullScope : IDisposable
+    {
+        public static readonly NullScope Instance = new();
+
+        public void Dispose()
+        {
+        }
     }
 }

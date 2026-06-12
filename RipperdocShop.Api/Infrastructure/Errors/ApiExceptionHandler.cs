@@ -25,7 +25,10 @@ public class ApiExceptionHandler(ILogger<ApiExceptionHandler> logger) : IExcepti
                 .Replace("\r", string.Empty)
                 .Replace("\n", string.Empty) ?? string.Empty;
 
-            logger.LogError(exception, "Unhandled exception while processing {Path}", safePath);
+            logger.LogError(
+                "Unhandled {ExceptionType} while processing {Path}",
+                exception.GetType().Name,
+                safePath);
         }
 
         var problem = new ProblemDetails
