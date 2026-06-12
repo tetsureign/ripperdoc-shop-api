@@ -49,28 +49,16 @@ public class ProductRatingsController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SoftDelete(Guid id)
     {
-        try
-        {
-            var product = await softDeleteRating.ExecuteAsync(id);
-            if (product == null)
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Resource not found",
-                    Detail = $"Rating with ID {id} does not exist"
-                });
-
-            return NoContent();
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(new ProblemDetails
+        var product = await softDeleteRating.ExecuteAsync(id);
+        if (product == null)
+            return NotFound(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid operation",
-                Detail = e.Message
+                Status = StatusCodes.Status404NotFound,
+                Title = "Resource not found",
+                Detail = $"Rating with ID {id} does not exist"
             });
-        }
+
+        return NoContent();
     }
 
     [HttpPost("{id:guid}/restore")]
@@ -79,27 +67,15 @@ public class ProductRatingsController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Restore(Guid id)
     {
-        try
-        {
-            var product = await restoreRating.ExecuteAsync(id);
-            if (product == null)
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Resource not found",
-                    Detail = $"Rating with ID {id} does not exist"
-                });
-
-            return NoContent();
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(new ProblemDetails
+        var product = await restoreRating.ExecuteAsync(id);
+        if (product == null)
+            return NotFound(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid operation",
-                Detail = e.Message
+                Status = StatusCodes.Status404NotFound,
+                Title = "Resource not found",
+                Detail = $"Rating with ID {id} does not exist"
             });
-        }
+
+        return NoContent();
     }
 }

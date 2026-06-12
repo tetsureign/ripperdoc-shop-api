@@ -36,25 +36,18 @@ public class ProductRatingsController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Customer")]
     public async Task<IActionResult> Create(ProductRatingCreateDto createDto)
     {
-        try
-        {
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!Guid.TryParse(userIdString, out var userId))
-                throw new Exception("Not logged in.");
-            
-            var rating = await _createRating.ExecuteAsync(createDto, userId);
-            
-            return CreatedAtAction(nameof(GetById), new { id = rating?.Id }, rating);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new ProblemDetails
+        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userIdString, out var userId))
+            return Unauthorized(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Could not create rating",
-                Detail = e.Message
+                Status = StatusCodes.Status401Unauthorized,
+                Title = "Unauthorized",
+                Detail = "Not logged in."
             });
-        }
+
+        var rating = await _createRating.ExecuteAsync(createDto, userId);
+
+        return CreatedAtAction(nameof(GetById), new { id = rating?.Id }, rating);
     }
 
     [HttpGet("{id:guid}")]
@@ -86,31 +79,24 @@ public class ProductRatingsController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Customer")]
     public async Task<IActionResult> Update(Guid id, ProductRatingCreateDto createDto)
     {
-        try
-        {
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!Guid.TryParse(userIdString, out var userId))
-                throw new Exception("Not logged in.");
-            
-            var rating = await _updateRating.ExecuteAsync(id, createDto, userId);
-            if (rating == null)
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Resource not found",
-                    Detail = $"Rating with ID {id} does not exist"
-                });
-
-            return NoContent();
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(new ProblemDetails
+        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userIdString, out var userId))
+            return Unauthorized(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid operation",
-                Detail = e.Message
+                Status = StatusCodes.Status401Unauthorized,
+                Title = "Unauthorized",
+                Detail = "Not logged in."
             });
-        }
+
+        var rating = await _updateRating.ExecuteAsync(id, createDto, userId);
+        if (rating == null)
+            return NotFound(new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "Resource not found",
+                Detail = $"Rating with ID {id} does not exist"
+            });
+
+        return NoContent();
     }
 }

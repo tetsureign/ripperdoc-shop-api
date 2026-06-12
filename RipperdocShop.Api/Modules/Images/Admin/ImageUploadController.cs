@@ -14,14 +14,7 @@ public class ImageUploadController(UploadImageCommand uploadImage) : ControllerB
     [RequestSizeLimit(UploadImageCommand.MaxFileSize)]
     public async Task<IActionResult> Upload(IFormFile image)
     {
-        try
-        {
-            var imageUrl = await uploadImage.ExecuteAsync(image);
-            return Ok(new { imageUrl });
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(new { error = ex.Message });
-        }
+        var imageUrl = await uploadImage.ExecuteAsync(image);
+        return Ok(new { imageUrl });
     }
 }

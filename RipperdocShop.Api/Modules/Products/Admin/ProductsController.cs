@@ -45,48 +45,24 @@ public class ProductsController(
     [HttpPost]
     public async Task<IActionResult> Create(ProductCreateDto createDto)
     {
-        try
-        {
-            var product = await createProduct.ExecuteAsync(createDto);
-            return CreatedAtAction(nameof(GetById), new { id = product?.Id }, product);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new ProblemDetails
-            {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Could not create product",
-                Detail = e.Message
-            });
-        }
+        var product = await createProduct.ExecuteAsync(createDto);
+        return CreatedAtAction(nameof(GetById), new { id = product?.Id }, product);
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, ProductCreateDto createDto)
     {
-        try
-        {
-            var product = await updateProduct.ExecuteAsync(id, createDto);
-            if (product == null)
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Could not update product",
-                    Detail =
-                        $"Product with ID {id}, or Category with ID {createDto.CategoryId}, or Brand with ID {createDto.BrandId} does not exist"
-                });
-
-            return NoContent();
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(new ProblemDetails
+        var product = await updateProduct.ExecuteAsync(id, createDto);
+        if (product == null)
+            return NotFound(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid operation",
-                Detail = e.Message
+                Status = StatusCodes.Status404NotFound,
+                Title = "Could not update product",
+                Detail =
+                    $"Product with ID {id}, or Category with ID {createDto.CategoryId}, or Brand with ID {createDto.BrandId} does not exist"
             });
-        }
+
+        return NoContent();
     }
 
     [HttpPost("{id:guid}/feature")]
@@ -95,28 +71,16 @@ public class ProductsController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SetFeatured(Guid id)
     {
-        try
-        {
-            var product = await setProductFeatured.ExecuteAsync(id);
-            if (product == null)
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Resource not found",
-                    Detail = $"Product with ID {id} does not exist"
-                });
-
-            return NoContent();
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(new ProblemDetails
+        var product = await setProductFeatured.ExecuteAsync(id);
+        if (product == null)
+            return NotFound(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid operation",
-                Detail = e.Message
+                Status = StatusCodes.Status404NotFound,
+                Title = "Resource not found",
+                Detail = $"Product with ID {id} does not exist"
             });
-        }
+
+        return NoContent();
     }
 
     [HttpPost("{id:guid}/unfeature")]
@@ -125,28 +89,16 @@ public class ProductsController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RemoveFeatured(Guid id)
     {
-        try
-        {
-            var product = await removeProductFeatured.ExecuteAsync(id);
-            if (product == null)
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Resource not found",
-                    Detail = $"Product with ID {id} does not exist"
-                });
-
-            return NoContent();
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(new ProblemDetails
+        var product = await removeProductFeatured.ExecuteAsync(id);
+        if (product == null)
+            return NotFound(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid operation",
-                Detail = e.Message
+                Status = StatusCodes.Status404NotFound,
+                Title = "Resource not found",
+                Detail = $"Product with ID {id} does not exist"
             });
-        }
+
+        return NoContent();
     }
 
 
@@ -156,28 +108,16 @@ public class ProductsController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SoftDelete(Guid id)
     {
-        try
-        {
-            var product = await softDeleteProduct.ExecuteAsync(id);
-            if (product == null)
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Resource not found",
-                    Detail = $"Product with ID {id} does not exist"
-                });
-
-            return NoContent();
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(new ProblemDetails
+        var product = await softDeleteProduct.ExecuteAsync(id);
+        if (product == null)
+            return NotFound(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid operation",
-                Detail = e.Message
+                Status = StatusCodes.Status404NotFound,
+                Title = "Resource not found",
+                Detail = $"Product with ID {id} does not exist"
             });
-        }
+
+        return NoContent();
     }
 
 
@@ -187,28 +127,16 @@ public class ProductsController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Restore(Guid id)
     {
-        try
-        {
-            var product = await restoreProduct.ExecuteAsync(id);
-            if (product == null)
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Resource not found",
-                    Detail = $"Product with ID {id} does not exist"
-                });
-
-            return NoContent();
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(new ProblemDetails
+        var product = await restoreProduct.ExecuteAsync(id);
+        if (product == null)
+            return NotFound(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid operation",
-                Detail = e.Message
+                Status = StatusCodes.Status404NotFound,
+                Title = "Resource not found",
+                Detail = $"Product with ID {id} does not exist"
             });
-        }
+
+        return NoContent();
     }
 
     [HttpDelete("{id:guid}/hard")]
@@ -217,27 +145,15 @@ public class ProductsController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeletePermanently(Guid id)
     {
-        try
-        {
-            var product = await deleteProductPermanently.ExecuteAsync(id);
-            if (product == null)
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Resource not found",
-                    Detail = $"Product with ID {id} does not exist"
-                });
-
-            return NoContent();
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(new ProblemDetails
+        var product = await deleteProductPermanently.ExecuteAsync(id);
+        if (product == null)
+            return NotFound(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid operation",
-                Detail = e.Message
+                Status = StatusCodes.Status404NotFound,
+                Title = "Resource not found",
+                Detail = $"Product with ID {id} does not exist"
             });
-        }
+
+        return NoContent();
     }
 }

@@ -31,20 +31,8 @@ public class BrandsController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create(BrandCreateDto createDto)
     {
-        try
-        {
-            var brand = await createBrand.ExecuteAsync(createDto);
-            return CreatedAtAction(nameof(GetById), new { id = brand.Id }, brand);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new ProblemDetails
-            {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Could not create brand",
-                Detail = e.Message
-            });
-        }
+        var brand = await createBrand.ExecuteAsync(createDto);
+        return CreatedAtAction(nameof(GetById), new { id = brand.Id }, brand);
     }
 
     [HttpGet("{id:guid}")]
@@ -67,28 +55,16 @@ public class BrandsController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Update(Guid id, BrandCreateDto createDto)
     {
-        try
-        {
-            var brand = await updateBrand.ExecuteAsync(id, createDto);
-            if (brand == null)
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Resource not found",
-                    Detail = $"Brand with ID {id} does not exist"
-                });
-
-            return NoContent();
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(new ProblemDetails
+        var brand = await updateBrand.ExecuteAsync(id, createDto);
+        if (brand == null)
+            return NotFound(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid operation",
-                Detail = e.Message
+                Status = StatusCodes.Status404NotFound,
+                Title = "Resource not found",
+                Detail = $"Brand with ID {id} does not exist"
             });
-        }
+
+        return NoContent();
     }
 
 
@@ -98,28 +74,16 @@ public class BrandsController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SoftDelete(Guid id)
     {
-        try
-        {
-            var brand = await softDeleteBrand.ExecuteAsync(id);
-            if (brand == null)
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Resource not found",
-                    Detail = $"Brand with ID {id} does not exist"
-                });
-
-            return NoContent();
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(new ProblemDetails
+        var brand = await softDeleteBrand.ExecuteAsync(id);
+        if (brand == null)
+            return NotFound(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid operation",
-                Detail = e.Message
+                Status = StatusCodes.Status404NotFound,
+                Title = "Resource not found",
+                Detail = $"Brand with ID {id} does not exist"
             });
-        }
+
+        return NoContent();
     }
 
 
@@ -129,28 +93,16 @@ public class BrandsController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Restore(Guid id)
     {
-        try
-        {
-            var brand = await restoreBrand.ExecuteAsync(id);
-            if (brand == null)
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Resource not found",
-                    Detail = $"Brand with ID {id} does not exist"
-                });
-
-            return NoContent();
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(new ProblemDetails
+        var brand = await restoreBrand.ExecuteAsync(id);
+        if (brand == null)
+            return NotFound(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid operation",
-                Detail = e.Message
+                Status = StatusCodes.Status404NotFound,
+                Title = "Resource not found",
+                Detail = $"Brand with ID {id} does not exist"
             });
-        }
+
+        return NoContent();
     }
 
     [HttpDelete("{id:guid}/hard")]
@@ -159,27 +111,15 @@ public class BrandsController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeletePermanently(Guid id)
     {
-        try
-        {
-            var brand = await deleteBrandPermanently.ExecuteAsync(id);
-            if (brand == null)
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Resource not found",
-                    Detail = $"Brand with ID {id} does not exist"
-                });
-
-            return NoContent();
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(new ProblemDetails
+        var brand = await deleteBrandPermanently.ExecuteAsync(id);
+        if (brand == null)
+            return NotFound(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid operation",
-                Detail = e.Message
+                Status = StatusCodes.Status404NotFound,
+                Title = "Resource not found",
+                Detail = $"Brand with ID {id} does not exist"
             });
-        }
+
+        return NoContent();
     }
 }

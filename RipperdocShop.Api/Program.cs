@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RipperdocShop.Api.Data;
+using RipperdocShop.Api.Infrastructure.Errors;
 using RipperdocShop.Api.Interceptors;
 using RipperdocShop.Api.Models.Identities;
 using RipperdocShop.Api.Modules;
@@ -58,6 +59,8 @@ if (builder.Environment.IsDevelopment())
 // App modules
 builder.Services.AddAppModules();
 
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddControllers();
 
 // Authentication services
@@ -137,6 +140,7 @@ app.UseForwardedHeaders();
 
 app.MapGet("/health", () => Results.Ok("Healthy"));
 
+app.UseExceptionHandler();
 app.UseStaticFiles();
 
 app.UseHttpLogging();

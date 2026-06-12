@@ -33,20 +33,8 @@ public class CategoriesController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create(CategoryCreateDto createDto)
     {
-        try
-        {
-            var category = await createCategory.ExecuteAsync(createDto);
-            return CreatedAtAction(nameof(GetById), new { id = category.Id }, category);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new ProblemDetails
-            {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Could not create category",
-                Detail = e.Message
-            });
-        }
+        var category = await createCategory.ExecuteAsync(createDto);
+        return CreatedAtAction(nameof(GetById), new { id = category.Id }, category);
     }
 
     [HttpGet("{id:guid}")]
@@ -73,29 +61,17 @@ public class CategoriesController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Update(Guid id, CategoryCreateDto createDto)
     {
-        try
-        {
-            var category = await updateCategory.ExecuteAsync(id, createDto);
+        var category = await updateCategory.ExecuteAsync(id, createDto);
 
-            if (category == null)
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Resource not found",
-                    Detail = $"Category with ID {id} does not exist"
-                });
-
-            return NoContent();
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(new ProblemDetails
+        if (category == null)
+            return NotFound(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid operation",
-                Detail = e.Message
+                Status = StatusCodes.Status404NotFound,
+                Title = "Resource not found",
+                Detail = $"Category with ID {id} does not exist"
             });
-        }
+
+        return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
@@ -104,29 +80,17 @@ public class CategoriesController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SoftDelete(Guid id)
     {
-        try
-        {
-            var category = await softDeleteCategory.ExecuteAsync(id);
+        var category = await softDeleteCategory.ExecuteAsync(id);
 
-            if (category == null)
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Resource not found",
-                    Detail = $"Category with ID {id} does not exist"
-                });
-
-            return NoContent();
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(new ProblemDetails
+        if (category == null)
+            return NotFound(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid operation",
-                Detail = e.Message
+                Status = StatusCodes.Status404NotFound,
+                Title = "Resource not found",
+                Detail = $"Category with ID {id} does not exist"
             });
-        }
+
+        return NoContent();
     }
 
     [HttpPost("{id:guid}/restore")]
@@ -135,29 +99,17 @@ public class CategoriesController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Restore(Guid id)
     {
-        try
-        {
-            var category = await restoreCategory.ExecuteAsync(id);
+        var category = await restoreCategory.ExecuteAsync(id);
 
-            if (category == null)
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Resource not found",
-                    Detail = $"Category with ID {id} does not exist"
-                });
-
-            return NoContent();
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(new ProblemDetails
+        if (category == null)
+            return NotFound(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid operation",
-                Detail = e.Message
+                Status = StatusCodes.Status404NotFound,
+                Title = "Resource not found",
+                Detail = $"Category with ID {id} does not exist"
             });
-        }
+
+        return NoContent();
     }
 
     [HttpDelete("{id:guid}/hard")]
@@ -165,28 +117,16 @@ public class CategoriesController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeletePermanently(Guid id)
     {
-        try
-        {
-            var category = await deleteCategoryPermanently.ExecuteAsync(id);
+        var category = await deleteCategoryPermanently.ExecuteAsync(id);
 
-            if (category == null)
-                return NotFound(new ProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Resource not found",
-                    Detail = $"Category with ID {id} does not exist"
-                });
-
-            return NoContent();
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(new ProblemDetails
+        if (category == null)
+            return NotFound(new ProblemDetails
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid operation",
-                Detail = e.Message
+                Status = StatusCodes.Status404NotFound,
+                Title = "Resource not found",
+                Detail = $"Category with ID {id} does not exist"
             });
-        }
+
+        return NoContent();
     }
 }
