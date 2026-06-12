@@ -2,6 +2,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RipperdocShop.Api.Modules.Ratings.Commands;
+using RipperdocShop.Api.Modules.Ratings.Queries;
 using RipperdocShop.Shared.DTOs;
 // ReSharper disable ConvertToPrimaryConstructor
 
@@ -11,11 +13,21 @@ namespace RipperdocShop.Api.Modules.Ratings.Customer;
 [ApiController]
 public class ProductRatingsController : ControllerBase
 {
-    private readonly ICustomerProductRatingService _productRatingService;
+    private readonly CreateProductRatingCommand _createRating;
+    private readonly GetProductRatingByIdQuery _getRatingById;
+    private readonly ListProductRatingsByProductSlugQuery _listRatingsByProductSlug;
+    private readonly UpdateProductRatingCommand _updateRating;
 
-    public ProductRatingsController(ICustomerProductRatingService productRatingService)
+    public ProductRatingsController(
+        CreateProductRatingCommand createRating,
+        GetProductRatingByIdQuery getRatingById,
+        ListProductRatingsByProductSlugQuery listRatingsByProductSlug,
+        UpdateProductRatingCommand updateRating)
     {
-        _productRatingService = productRatingService;
+        _createRating = createRating;
+        _getRatingById = getRatingById;
+        _listRatingsByProductSlug = listRatingsByProductSlug;
+        _updateRating = updateRating;
     }
 
     [HttpPost]
@@ -30,7 +42,7 @@ public class ProductRatingsController : ControllerBase
             if (!Guid.TryParse(userIdString, out var userId))
                 throw new Exception("Not logged in.");
             
-            var rating = await _productRatingService.CreateAsync(createDto, userId);
+            var rating = await _createRating.ExecuteAsync(createDto, userId);
             
             return CreatedAtAction(nameof(GetById), new { id = rating?.Id }, rating);
         }
@@ -48,7 +60,7 @@ public class ProductRatingsController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var rating = await _productRatingService.GetByIdAsync(id);
+        var rating = await _getRatingById.ExecuteAsync(id);
         return rating == null
             ? NotFound(new ProblemDetails
             {
@@ -63,7 +75,7 @@ public class ProductRatingsController : ControllerBase
     public async Task<IActionResult> GetByProductSlug(string slug, [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10)
     {
-        var response = await _productRatingService.GetByProductSlugAsync(slug, false, page, pageSize);
+        var response = await _listRatingsByProductSlug.ExecuteAsync(slug, false, page, pageSize);
         return Ok(response);
     }
 
@@ -80,7 +92,7 @@ public class ProductRatingsController : ControllerBase
             if (!Guid.TryParse(userIdString, out var userId))
                 throw new Exception("Not logged in.");
             
-            var rating = await _productRatingService.UpdateAsync(id, createDto, userId);
+            var rating = await _updateRating.ExecuteAsync(id, createDto, userId);
             if (rating == null)
                 return NotFound(new ProblemDetails
                 {

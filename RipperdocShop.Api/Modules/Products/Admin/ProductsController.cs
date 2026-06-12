@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RipperdocShop.Api.Modules.Products.Core;
+using RipperdocShop.Api.Modules.Products.Commands;
+using RipperdocShop.Api.Modules.Products.Queries;
 using RipperdocShop.Shared.DTOs;
 
 namespace RipperdocShop.Api.Modules.Products.Admin;
@@ -10,27 +11,27 @@ namespace RipperdocShop.Api.Modules.Products.Admin;
 [ApiController]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 public class ProductsController(
-    IAdminProductService productService,
-    IProductCoreService productCoreService) : ControllerBase
+    ListAdminProductsQuery listAdminProducts,
+    GetProductByIdQuery getProductById,
+    CreateProductCommand createProduct,
+    UpdateProductCommand updateProduct,
+    SetProductFeaturedCommand setProductFeatured,
+    RemoveProductFeaturedCommand removeProductFeatured,
+    SoftDeleteProductCommand softDeleteProduct,
+    RestoreProductCommand restoreProduct,
+    DeleteProductPermanentlyCommand deleteProductPermanently) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] bool includeDeleted = false,
         [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
-        var (products, totalCount, totalPages) = await productCoreService.GetAllAsync(includeDeleted, page, pageSize);
-        var response = new AdminProductResponse()
-        {
-            Products = products,
-            TotalCount = totalCount,
-            TotalPages = totalPages
-        };
-        return Ok(response);
+        return Ok(await listAdminProducts.ExecuteAsync(includeDeleted, page, pageSize));
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var product = await productCoreService.GetByIdAsync(id);
+        var product = await getProductById.ExecuteAsync(id);
         return product == null
             ? NotFound(new ProblemDetails
             {
@@ -46,7 +47,7 @@ public class ProductsController(
     {
         try
         {
-            var product = await productService.CreateAsync(createDto);
+            var product = await createProduct.ExecuteAsync(createDto);
             return CreatedAtAction(nameof(GetById), new { id = product?.Id }, product);
         }
         catch (Exception e)
@@ -65,7 +66,7 @@ public class ProductsController(
     {
         try
         {
-            var product = await productService.UpdateAsync(id, createDto);
+            var product = await updateProduct.ExecuteAsync(id, createDto);
             if (product == null)
                 return NotFound(new ProblemDetails
                 {
@@ -96,7 +97,7 @@ public class ProductsController(
     {
         try
         {
-            var product = await productService.SetFeaturedAsync(id);
+            var product = await setProductFeatured.ExecuteAsync(id);
             if (product == null)
                 return NotFound(new ProblemDetails
                 {
@@ -126,7 +127,7 @@ public class ProductsController(
     {
         try
         {
-            var product = await productService.RemoveFeaturedAsync(id);
+            var product = await removeProductFeatured.ExecuteAsync(id);
             if (product == null)
                 return NotFound(new ProblemDetails
                 {
@@ -157,7 +158,7 @@ public class ProductsController(
     {
         try
         {
-            var product = await productService.SoftDeleteAsync(id);
+            var product = await softDeleteProduct.ExecuteAsync(id);
             if (product == null)
                 return NotFound(new ProblemDetails
                 {
@@ -188,7 +189,7 @@ public class ProductsController(
     {
         try
         {
-            var product = await productService.RestoreAsync(id);
+            var product = await restoreProduct.ExecuteAsync(id);
             if (product == null)
                 return NotFound(new ProblemDetails
                 {
@@ -218,7 +219,7 @@ public class ProductsController(
     {
         try
         {
-            var product = await productService.DeletePermanentlyAsync(id);
+            var product = await deleteProductPermanently.ExecuteAsync(id);
             if (product == null)
                 return NotFound(new ProblemDetails
                 {

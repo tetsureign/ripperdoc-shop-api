@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using RipperdocShop.Api.Modules.Ratings.Core;
+using RipperdocShop.Api.Modules.Ratings.Commands;
+using RipperdocShop.Api.Modules.Ratings.Queries;
 
 namespace RipperdocShop.Api.Modules.Ratings.Admin;
 
@@ -10,22 +11,16 @@ namespace RipperdocShop.Api.Modules.Ratings.Admin;
 [ApiController]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 public class ProductRatingsController(
-    IAdminProductRatingService productRatingService,
-    IProductRatingCoreService productRatingCoreService) : ControllerBase
+    ListAdminProductRatingsByProductQuery listRatingsByProduct,
+    ListAdminProductRatingsByUserQuery listRatingsByUser,
+    SoftDeleteProductRatingCommand softDeleteRating,
+    RestoreProductRatingCommand restoreRating) : ControllerBase
 {
     [HttpGet("by-product/{productId:guid}")]
     public async Task<IActionResult> GetByProduct(Guid productId, [FromQuery] bool includeDeleted = false,
         [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
-        var (ratings, totalCount, totalPages) =
-            await productRatingCoreService.GetByProductAsync(productId, includeDeleted, page, pageSize);
-
-        var response = new AdminProductRatingResponse()
-        {
-            Ratings = ratings,
-            TotalCount = totalCount,
-            TotalPages = totalPages
-        };
+        var response = await listRatingsByProduct.ExecuteAsync(productId, includeDeleted, page, pageSize);
 
         return response.Ratings.IsNullOrEmpty() ? NotFound(new ProblemDetails
         {
@@ -38,15 +33,7 @@ public class ProductRatingsController(
     [HttpGet("by-user/{userId:guid}")]
     public async Task<IActionResult> GetByUser(Guid userId, [FromQuery] bool includeDeleted = false, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
-        var (ratings, totalCount, totalPages) =
-            await productRatingCoreService.GetByUserAsync(userId, includeDeleted, page, pageSize);
-
-        var response = new AdminProductRatingResponse()
-        {
-            Ratings = ratings,
-            TotalCount = totalCount,
-            TotalPages = totalPages
-        };
+        var response = await listRatingsByUser.ExecuteAsync(userId, includeDeleted, page, pageSize);
 
         return response.Ratings.IsNullOrEmpty() ? NotFound(new ProblemDetails
         {
@@ -64,7 +51,7 @@ public class ProductRatingsController(
     {
         try
         {
-            var product = await productRatingService.SoftDeleteAsync(id);
+            var product = await softDeleteRating.ExecuteAsync(id);
             if (product == null)
                 return NotFound(new ProblemDetails
                 {
@@ -94,7 +81,7 @@ public class ProductRatingsController(
     {
         try
         {
-            var product = await productRatingService.RestoreAsync(id);
+            var product = await restoreRating.ExecuteAsync(id);
             if (product == null)
                 return NotFound(new ProblemDetails
                 {

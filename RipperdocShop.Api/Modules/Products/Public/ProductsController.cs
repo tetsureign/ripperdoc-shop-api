@@ -1,24 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using RipperdocShop.Api.Modules.Products.Customer;
+using RipperdocShop.Api.Modules.Products.Queries;
 
 namespace RipperdocShop.Api.Modules.Products.Public;
 
 [Route("api/products")]
 [ApiController]
-public class ProductsController(ICustomerProductService productService) : ControllerBase
+public class ProductsController(
+    ListProductsQuery listProducts,
+    GetProductBySlugQuery getProductBySlug,
+    ListProductsByCategorySlugQuery listProductsByCategorySlug,
+    ListProductsByBrandSlugQuery listProductsByBrandSlug,
+    ListFeaturedProductsQuery listFeaturedProducts) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
-        var response = await productService.GetAllAsync(false, page, pageSize);
+        var response = await listProducts.ExecuteAsync(false, page, pageSize);
         return Ok(response);
     }
 
     [HttpGet("{slug}")]
     public async Task<IActionResult> GetBySlug(string slug)
     {
-        var product = await productService.GetBySlugAsync(slug);
+        var product = await getProductBySlug.ExecuteAsync(slug);
         return product == null
             ? NotFound(new ProblemDetails
             {
@@ -32,14 +37,14 @@ public class ProductsController(ICustomerProductService productService) : Contro
     [HttpGet("category/{slug}")]
     public async Task<IActionResult> GetByCategorySlug(string slug, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
-        var response = await productService.GetByCategorySlugAsync(slug, false, page, pageSize);
+        var response = await listProductsByCategorySlug.ExecuteAsync(slug, false, page, pageSize);
         return Ok(response);
     }
 
     [HttpGet("brand/{slug}")]
     public async Task<IActionResult> GetByBrandSlug(string slug, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
-        var response = await productService.GetByBrandSlugAsync(slug, false, page, pageSize);
+        var response = await listProductsByBrandSlug.ExecuteAsync(slug, false, page, pageSize);
 
         return Ok(response);
     }
@@ -47,7 +52,7 @@ public class ProductsController(ICustomerProductService productService) : Contro
     [HttpGet("featured")]
     public async Task<IActionResult> GetFeatured()
     {
-        var products = await productService.GetFeaturedProductsAsync();
+        var products = await listFeaturedProducts.ExecuteAsync();
         return products.IsNullOrEmpty()
             ? NotFound(new ProblemDetails
             {

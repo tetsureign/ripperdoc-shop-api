@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RipperdocShop.Api.Modules.Categories.Core;
+using RipperdocShop.Api.Modules.Categories.Commands;
+using RipperdocShop.Api.Modules.Categories.Queries;
 using RipperdocShop.Shared.DTOs;
 
 namespace RipperdocShop.Api.Modules.Categories.Admin;
@@ -10,8 +11,13 @@ namespace RipperdocShop.Api.Modules.Categories.Admin;
 [ApiController]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 public class CategoriesController(
-    IAdminCategoryService categoryService,
-    ICategoryCoreService categoryCoreService)
+    ListAdminCategoriesQuery listAdminCategories,
+    GetCategoryByIdQuery getCategoryById,
+    CreateCategoryCommand createCategory,
+    UpdateCategoryCommand updateCategory,
+    SoftDeleteCategoryCommand softDeleteCategory,
+    RestoreCategoryCommand restoreCategory,
+    DeleteCategoryPermanentlyCommand deleteCategoryPermanently)
     : ControllerBase
 {
     [HttpGet]
@@ -19,15 +25,7 @@ public class CategoriesController(
     public async Task<IActionResult> GetAll([FromQuery] bool includeDeleted = false, [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10)
     {
-        var (categories, totalCount, totalPages) =
-            await categoryCoreService.GetAllAsync(includeDeleted, page, pageSize);
-        var response = new AdminCategoryResponse()
-        {
-            Categories = categories,
-            TotalCount = totalCount,
-            TotalPages = totalPages
-        };
-        return Ok(response);
+        return Ok(await listAdminCategories.ExecuteAsync(includeDeleted, page, pageSize));
     }
 
     [HttpPost]
@@ -37,7 +35,7 @@ public class CategoriesController(
     {
         try
         {
-            var category = await categoryService.CreateAsync(createDto);
+            var category = await createCategory.ExecuteAsync(createDto);
             return CreatedAtAction(nameof(GetById), new { id = category.Id }, category);
         }
         catch (Exception e)
@@ -56,7 +54,7 @@ public class CategoriesController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var category = await categoryCoreService.GetByIdAsync(id);
+        var category = await getCategoryById.ExecuteAsync(id);
 
         if (category == null)
             return NotFound(new ProblemDetails
@@ -77,7 +75,7 @@ public class CategoriesController(
     {
         try
         {
-            var category = await categoryService.UpdateAsync(id, createDto);
+            var category = await updateCategory.ExecuteAsync(id, createDto);
 
             if (category == null)
                 return NotFound(new ProblemDetails
@@ -108,7 +106,7 @@ public class CategoriesController(
     {
         try
         {
-            var category = await categoryService.SoftDeleteAsync(id);
+            var category = await softDeleteCategory.ExecuteAsync(id);
 
             if (category == null)
                 return NotFound(new ProblemDetails
@@ -139,7 +137,7 @@ public class CategoriesController(
     {
         try
         {
-            var category = await categoryService.RestoreAsync(id);
+            var category = await restoreCategory.ExecuteAsync(id);
 
             if (category == null)
                 return NotFound(new ProblemDetails
@@ -169,7 +167,7 @@ public class CategoriesController(
     {
         try
         {
-            var category = await categoryService.DeletePermanentlyAsync(id);
+            var category = await deleteCategoryPermanently.ExecuteAsync(id);
 
             if (category == null)
                 return NotFound(new ProblemDetails

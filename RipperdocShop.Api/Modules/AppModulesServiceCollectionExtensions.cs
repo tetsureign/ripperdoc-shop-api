@@ -1,19 +1,16 @@
 using RipperdocShop.Api.Modules.Auth;
-using RipperdocShop.Api.Modules.Brands.Admin;
-using RipperdocShop.Api.Modules.Brands.Core;
-using RipperdocShop.Api.Modules.Brands.Customer;
-using RipperdocShop.Api.Modules.Categories.Admin;
-using RipperdocShop.Api.Modules.Categories.Core;
-using RipperdocShop.Api.Modules.Categories.Customer;
-using RipperdocShop.Api.Modules.Customers.Admin;
-using RipperdocShop.Api.Modules.Customers.Core;
-using RipperdocShop.Api.Modules.Images;
-using RipperdocShop.Api.Modules.Products.Admin;
-using RipperdocShop.Api.Modules.Products.Core;
-using RipperdocShop.Api.Modules.Products.Customer;
-using RipperdocShop.Api.Modules.Ratings.Admin;
-using RipperdocShop.Api.Modules.Ratings.Core;
-using RipperdocShop.Api.Modules.Ratings.Customer;
+using RipperdocShop.Api.Modules.Auth.Commands;
+using RipperdocShop.Api.Modules.Auth.Queries;
+using RipperdocShop.Api.Modules.Brands.Commands;
+using RipperdocShop.Api.Modules.Brands.Queries;
+using RipperdocShop.Api.Modules.Categories.Commands;
+using RipperdocShop.Api.Modules.Categories.Queries;
+using RipperdocShop.Api.Modules.Customers.Queries;
+using RipperdocShop.Api.Modules.Images.Commands;
+using RipperdocShop.Api.Modules.Products.Commands;
+using RipperdocShop.Api.Modules.Products.Queries;
+using RipperdocShop.Api.Modules.Ratings.Commands;
+using RipperdocShop.Api.Modules.Ratings.Queries;
 
 namespace RipperdocShop.Api.Modules;
 
@@ -21,27 +18,61 @@ public static class AppModulesServiceCollectionExtensions
 {
     public static IServiceCollection AddAppModules(this IServiceCollection services)
     {
-        services.AddScoped<IBrandCoreService, BrandCoreService>();
-        services.AddScoped<IAdminBrandService, AdminBrandService>();
-        services.AddScoped<ICustomerBrandService, CustomerBrandService>();
-
-        services.AddScoped<ICategoryCoreService, CategoryCoreService>();
-        services.AddScoped<IAdminCategoryService, AdminCategoryService>();
-        services.AddScoped<ICustomerCategoryService, CustomerCategoryService>();
-
-        services.AddScoped<IProductCoreService, ProductCoreService>();
-        services.AddScoped<IAdminProductService, AdminProductService>();
-        services.AddScoped<ICustomerProductService, CustomerProductService>();
-
-        services.AddScoped<IProductRatingCoreService, ProductRatingCoreService>();
-        services.AddScoped<IAdminProductRatingService, AdminProductRatingService>();
-        services.AddScoped<ICustomerProductRatingService, CustomerProductRatingService>();
-
-        services.AddScoped<IAdminCustomerListService, AdminCustomerListService>();
-        services.AddScoped<IUserService, UserService>();
-
-        services.AddScoped<IImageService, ImageService>();
         services.AddScoped<JwtService>();
+        services.AddScoped<LoginCommand>();
+        services.AddScoped<RegisterCommand>();
+        services.AddScoped<LogoutCommand>();
+        services.AddScoped<WhoAmIQuery>();
+
+        services.AddScoped<CreateBrandCommand>();
+        services.AddScoped<UpdateBrandCommand>();
+        services.AddScoped<SoftDeleteBrandCommand>();
+        services.AddScoped<RestoreBrandCommand>();
+        services.AddScoped<DeleteBrandPermanentlyCommand>();
+        services.AddScoped<ListAdminBrandsQuery>();
+        services.AddScoped<GetBrandByIdQuery>();
+        services.AddScoped<ListBrandsQuery>();
+        services.AddScoped<GetBrandBySlugQuery>();
+
+        services.AddScoped<CreateCategoryCommand>();
+        services.AddScoped<UpdateCategoryCommand>();
+        services.AddScoped<SoftDeleteCategoryCommand>();
+        services.AddScoped<RestoreCategoryCommand>();
+        services.AddScoped<DeleteCategoryPermanentlyCommand>();
+        services.AddScoped<ListAdminCategoriesQuery>();
+        services.AddScoped<GetCategoryByIdQuery>();
+        services.AddScoped<ListCategoriesQuery>();
+        services.AddScoped<GetCategoryBySlugQuery>();
+
+        services.AddScoped<ListAdminCustomersQuery>();
+        services.AddScoped<GetUserByIdQuery>();
+
+        services.AddScoped<UploadImageCommand>();
+
+        services.AddScoped<CreateProductCommand>();
+        services.AddScoped<UpdateProductCommand>();
+        services.AddScoped<SetProductFeaturedCommand>();
+        services.AddScoped<RemoveProductFeaturedCommand>();
+        services.AddScoped<SoftDeleteProductCommand>();
+        services.AddScoped<RestoreProductCommand>();
+        services.AddScoped<DeleteProductPermanentlyCommand>();
+        services.AddScoped<ListAdminProductsQuery>();
+        services.AddScoped<GetProductByIdQuery>();
+        services.AddScoped<ListProductsQuery>();
+        services.AddScoped<GetProductBySlugQuery>();
+        services.AddScoped<ListProductsByCategorySlugQuery>();
+        services.AddScoped<ListProductsByBrandSlugQuery>();
+        services.AddScoped<ListFeaturedProductsQuery>();
+
+        services.AddScoped<CreateProductRatingCommand>();
+        services.AddScoped<UpdateProductRatingCommand>();
+        services.AddScoped<SoftDeleteProductRatingCommand>();
+        services.AddScoped<RestoreProductRatingCommand>();
+        services.AddScoped<DeleteProductRatingPermanentlyCommand>();
+        services.AddScoped<GetProductRatingByIdQuery>();
+        services.AddScoped<ListProductRatingsByProductSlugQuery>();
+        services.AddScoped<ListAdminProductRatingsByProductQuery>();
+        services.AddScoped<ListAdminProductRatingsByUserQuery>();
 
         return services;
     }

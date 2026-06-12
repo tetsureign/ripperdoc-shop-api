@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RipperdocShop.Api.Modules.Brands.Core;
+using RipperdocShop.Api.Modules.Brands.Commands;
+using RipperdocShop.Api.Modules.Brands.Queries;
 using RipperdocShop.Shared.DTOs;
 
 namespace RipperdocShop.Api.Modules.Brands.Admin;
@@ -10,21 +11,19 @@ namespace RipperdocShop.Api.Modules.Brands.Admin;
 [ApiController]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 public class BrandsController(
-    IAdminBrandService brandService,
-    IBrandCoreService brandCoreService) : ControllerBase
+    ListAdminBrandsQuery listAdminBrands,
+    GetBrandByIdQuery getBrandById,
+    CreateBrandCommand createBrand,
+    UpdateBrandCommand updateBrand,
+    SoftDeleteBrandCommand softDeleteBrand,
+    RestoreBrandCommand restoreBrand,
+    DeleteBrandPermanentlyCommand deleteBrandPermanently) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] bool includeDeleted = false, [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10)
     {
-        var (brands, totalCount, totalPages) = await brandCoreService.GetAllAsync(includeDeleted, page, pageSize);
-        var response = new AdminBrandResponse()
-        {
-            Brands = brands,
-            TotalCount = totalCount,
-            TotalPages = totalPages
-        };
-        return Ok(response);
+        return Ok(await listAdminBrands.ExecuteAsync(includeDeleted, page, pageSize));
     }
 
     [HttpPost]
@@ -34,7 +33,7 @@ public class BrandsController(
     {
         try
         {
-            var brand = await brandService.CreateAsync(createDto);
+            var brand = await createBrand.ExecuteAsync(createDto);
             return CreatedAtAction(nameof(GetById), new { id = brand.Id }, brand);
         }
         catch (Exception e)
@@ -51,7 +50,7 @@ public class BrandsController(
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var brand = await brandCoreService.GetByIdAsync(id);
+        var brand = await getBrandById.ExecuteAsync(id);
         return brand == null
             ? NotFound(new ProblemDetails
             {
@@ -70,7 +69,7 @@ public class BrandsController(
     {
         try
         {
-            var brand = await brandService.UpdateAsync(id, createDto);
+            var brand = await updateBrand.ExecuteAsync(id, createDto);
             if (brand == null)
                 return NotFound(new ProblemDetails
                 {
@@ -101,7 +100,7 @@ public class BrandsController(
     {
         try
         {
-            var brand = await brandService.SoftDeleteAsync(id);
+            var brand = await softDeleteBrand.ExecuteAsync(id);
             if (brand == null)
                 return NotFound(new ProblemDetails
                 {
@@ -132,7 +131,7 @@ public class BrandsController(
     {
         try
         {
-            var brand = await brandService.RestoreAsync(id);
+            var brand = await restoreBrand.ExecuteAsync(id);
             if (brand == null)
                 return NotFound(new ProblemDetails
                 {
@@ -162,7 +161,7 @@ public class BrandsController(
     {
         try
         {
-            var brand = await brandService.DeletePermanentlyAsync(id);
+            var brand = await deleteBrandPermanently.ExecuteAsync(id);
             if (brand == null)
                 return NotFound(new ProblemDetails
                 {

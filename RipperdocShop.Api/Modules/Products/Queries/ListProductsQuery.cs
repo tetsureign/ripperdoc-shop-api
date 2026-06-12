@@ -1,0 +1,36 @@
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using RipperdocShop.Api.Data;
+using RipperdocShop.Shared.DTOs;
+
+namespace RipperdocShop.Api.Modules.Products.Queries;
+
+public class ListProductsQuery(ApplicationDbContext context, IMapper mapper)
+{
+    public async Task<PaginatedProductResponse> ExecuteAsync(bool includeDeleted, int page, int pageSize)
+    {
+        var query = context.Products
+            .Include(p => p.Category)
+            .Include(p => p.Brand)
+            .Where(p =>
+                (includeDeleted || p.DeletedAt == null) &&
+                (includeDeleted || p.Category.DeletedAt == null) &&
+                (p.Brand == null || includeDeleted || p.Brand.DeletedAt == null));
+
+        var totalCount = await query.CountAsync();
+        var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+        var products = await query
+            .OrderByDescending(p => p.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PaginatedProductResponse
+        {
+            Products = mapper.Map<IEnumerable<ProductDto>>(products),
+            TotalCount = totalCount,
+            TotalPages = totalPages
+        };
+    }
+}

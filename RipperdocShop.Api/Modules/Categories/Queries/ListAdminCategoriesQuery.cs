@@ -1,0 +1,29 @@
+using Microsoft.EntityFrameworkCore;
+using RipperdocShop.Api.Data;
+using RipperdocShop.Api.Modules.Categories.Admin;
+
+namespace RipperdocShop.Api.Modules.Categories.Queries;
+
+public class ListAdminCategoriesQuery(ApplicationDbContext context)
+{
+    public async Task<AdminCategoryResponse> ExecuteAsync(bool includeDeleted, int page, int pageSize)
+    {
+        var query = context.Categories.Where(c => includeDeleted || c.DeletedAt == null);
+
+        var totalCount = await query.CountAsync();
+        var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+        var categories = await query
+            .OrderByDescending(c => c.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new AdminCategoryResponse
+        {
+            Categories = categories,
+            TotalCount = totalCount,
+            TotalPages = totalPages
+        };
+    }
+}
