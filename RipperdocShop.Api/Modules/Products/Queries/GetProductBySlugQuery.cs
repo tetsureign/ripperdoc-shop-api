@@ -1,11 +1,11 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using RipperdocShop.Api.Data;
 using RipperdocShop.Shared.DTOs;
+using RipperdocShop.Api.Modules.Products;
 
 namespace RipperdocShop.Api.Modules.Products.Queries;
 
-public class GetProductBySlugQuery(ApplicationDbContext context, IMapper mapper)
+public class GetProductBySlugQuery(ApplicationDbContext context)
 {
     public async Task<ProductDto?> ExecuteAsync(string slug)
     {
@@ -14,6 +14,6 @@ public class GetProductBySlugQuery(ApplicationDbContext context, IMapper mapper)
             .Include(p => p.Brand)
             .FirstOrDefaultAsync(p => p.Slug == slug);
 
-        return mapper.Map<ProductDto>(product);
+        return product.ToDto();
     }
 }

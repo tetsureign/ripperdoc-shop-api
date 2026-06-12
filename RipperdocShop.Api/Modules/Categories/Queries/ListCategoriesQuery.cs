@@ -1,11 +1,11 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using RipperdocShop.Api.Data;
 using RipperdocShop.Shared.DTOs;
+using RipperdocShop.Api.Modules.Categories;
 
 namespace RipperdocShop.Api.Modules.Categories.Queries;
 
-public class ListCategoriesQuery(ApplicationDbContext context, IMapper mapper)
+public class ListCategoriesQuery(ApplicationDbContext context)
 {
     public async Task<PaginatedCategoryResponse> ExecuteAsync(bool includeDeleted, int page, int pageSize)
     {
@@ -22,7 +22,7 @@ public class ListCategoriesQuery(ApplicationDbContext context, IMapper mapper)
 
         return new PaginatedCategoryResponse
         {
-            Categories = mapper.Map<IEnumerable<CategoryDto>>(categories),
+            Categories = categories.Select(category => category.ToDto()!),
             TotalCount = totalCount,
             TotalPages = totalPages
         };

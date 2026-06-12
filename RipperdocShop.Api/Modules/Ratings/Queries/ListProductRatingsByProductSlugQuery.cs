@@ -1,11 +1,11 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using RipperdocShop.Api.Data;
 using RipperdocShop.Shared.DTOs;
+using RipperdocShop.Api.Modules.Ratings;
 
 namespace RipperdocShop.Api.Modules.Ratings.Queries;
 
-public class ListProductRatingsByProductSlugQuery(ApplicationDbContext context, IMapper mapper)
+public class ListProductRatingsByProductSlugQuery(ApplicationDbContext context)
 {
     public async Task<PaginatedProductRatingResponse> ExecuteAsync(string slug, bool includeDeleted, int page,
         int pageSize)
@@ -27,7 +27,7 @@ public class ListProductRatingsByProductSlugQuery(ApplicationDbContext context, 
 
         return new PaginatedProductRatingResponse
         {
-            Ratings = mapper.Map<IEnumerable<ProductRatingDto>>(ratings),
+            Ratings = ratings.ToDtos(),
             TotalCount = totalCount,
             TotalPages = totalPages
         };

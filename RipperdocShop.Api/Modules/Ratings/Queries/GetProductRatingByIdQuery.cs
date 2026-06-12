@@ -1,11 +1,11 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using RipperdocShop.Api.Data;
 using RipperdocShop.Shared.DTOs;
+using RipperdocShop.Api.Modules.Ratings;
 
 namespace RipperdocShop.Api.Modules.Ratings.Queries;
 
-public class GetProductRatingByIdQuery(ApplicationDbContext context, IMapper mapper)
+public class GetProductRatingByIdQuery(ApplicationDbContext context)
 {
     public async Task<ProductRatingDto?> ExecuteAsync(Guid id)
     {
@@ -14,6 +14,6 @@ public class GetProductRatingByIdQuery(ApplicationDbContext context, IMapper map
             .Include(r => r.User)
             .FirstOrDefaultAsync(r => r.Id == id);
 
-        return mapper.Map<ProductRatingDto>(rating);
+        return rating.ToDto();
     }
 }

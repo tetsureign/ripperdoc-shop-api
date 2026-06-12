@@ -19,8 +19,6 @@ builder.Services.AddHttpClient("CustomerApi", client =>
     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 });
 
-builder.Services.AddAutoMapper(typeof(Program));
-
 builder.Services.AddScoped<IProductService, ProductService>()
     .AddScoped<ICategoryService, CategoryService>()
     .AddScoped<IBrandService, BrandService>()

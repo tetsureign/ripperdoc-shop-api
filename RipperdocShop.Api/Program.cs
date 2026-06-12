@@ -40,9 +40,6 @@ builder.Services.AddIdentity<AppUser, AppRole>(options => options.SignIn.Require
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-// AutoMapper services
-builder.Services.AddAutoMapper(typeof(Program));
-
 // Logger
 builder.Services.AddHttpLogging(options => { });
 

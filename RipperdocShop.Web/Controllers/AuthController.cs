@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +9,7 @@ using RipperdocShop.Web.Services;
 
 namespace RipperdocShop.Web.Controllers;
 
-public class AuthController(IUserService userService, IMapper mapper) : Controller
+public class AuthController(IUserService userService) : Controller
 {
     [HttpGet]
     [AllowAnonymous]
@@ -28,7 +27,11 @@ public class AuthController(IUserService userService, IMapper mapper) : Controll
         if (!ModelState.IsValid)
             return View(viewModel);
 
-        var dto = mapper.Map<LoginDto>(viewModel);
+        var dto = new LoginDto
+        {
+            Email = viewModel.Email,
+            Password = viewModel.Password
+        };
 
         var success = await userService.Login(dto.Email, dto.Password);
         if (!success)
@@ -83,7 +86,11 @@ public class AuthController(IUserService userService, IMapper mapper) : Controll
         if (!ModelState.IsValid)
             return View(viewModel);
 
-        var dto = mapper.Map<LoginDto>(viewModel);
+        var dto = new LoginDto
+        {
+            Email = viewModel.Email,
+            Password = viewModel.Password
+        };
         var success = await userService.Register(dto.Email, dto.Password);
 
         if (!success)

@@ -1,10 +1,6 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using RipperdocShop.Api.Data;
 using RipperdocShop.Api.Models.Entities;
-using RipperdocShop.Api.Modules.Brands;
-using RipperdocShop.Api.Modules.Categories;
-using RipperdocShop.Api.Modules.Products;
 using RipperdocShop.Api.Modules.Products.Commands;
 using RipperdocShop.Api.Modules.Products.Queries;
 using RipperdocShop.Shared.DTOs;
@@ -14,18 +10,6 @@ namespace RipperdocShop.Tests.Modules.Products;
 
 public class ProductUseCaseTests
 {
-    private static IMapper CreateMapper()
-    {
-        var config = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile<ProductMappingProfile>();
-            cfg.AddProfile<CategoryMappingProfile>();
-            cfg.AddProfile<BrandMappingProfile>();
-        });
-
-        return config.CreateMapper();
-    }
-
     private async Task<ApplicationDbContext> GetDbContextWithData(string dbName)
     {
         var context = TestDbContextFactory.CreateInMemoryDbContext(dbName);
@@ -82,7 +66,7 @@ public class ProductUseCaseTests
     public async Task GetProductBySlugQuery_Returns_Correct_Product()
     {
         var context = await GetDbContextWithData("TestDb_ProductGetBySlug");
-        var query = new GetProductBySlugQuery(context, CreateMapper());
+        var query = new GetProductBySlugQuery(context);
         var slug = context.Products.First().Slug;
 
         var product = await query.ExecuteAsync(slug);
@@ -99,7 +83,7 @@ public class ProductUseCaseTests
         category.SoftDelete();
         await context.SaveChangesAsync();
 
-        var query = new ListProductsByCategorySlugQuery(context, CreateMapper());
+        var query = new ListProductsByCategorySlugQuery(context);
 
         var response1 = await query.ExecuteAsync(category.Slug, includeDeleted: false, 1, 10);
         var response2 = await query.ExecuteAsync(category.Slug, includeDeleted: true, 1, 10);
@@ -114,7 +98,7 @@ public class ProductUseCaseTests
         var context = await GetDbContextWithData("TestDb_ProductBrandNotDeleted");
         var brand = context.Brands.First();
 
-        var query = new ListProductsByBrandSlugQuery(context, CreateMapper());
+        var query = new ListProductsByBrandSlugQuery(context);
         var response = await query.ExecuteAsync(brand.Slug, includeDeleted: false, 1, 10);
 
         Assert.NotEmpty(response.Products);
@@ -143,7 +127,7 @@ public class ProductUseCaseTests
     public async Task ListFeaturedProductsQuery_Returns_Only_Featured_Products()
     {
         var context = await GetDbContextWithData("TestDb_ProductFeatured");
-        var query = new ListFeaturedProductsQuery(context, CreateMapper());
+        var query = new ListFeaturedProductsQuery(context);
 
         var featured = await query.ExecuteAsync();
 
