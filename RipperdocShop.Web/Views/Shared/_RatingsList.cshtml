@@ -1,6 +1,0 @@
-@model IEnumerable<RipperdocShop.Shared.DTOs.ProductRatingDto>
-
-@foreach(var rating in Model)
-{
-  @await Html.PartialAsync("_Ratings", rating)
-}

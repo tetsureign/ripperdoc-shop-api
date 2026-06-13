@@ -1,0 +1,13 @@
+{
+  "name": "ripperdoc-shop",
+  "version": "0.2.0",
+  "description": "",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.5.0",
+      "onFail": "download"
+    }
+  },
+  "type": "module"
+}
