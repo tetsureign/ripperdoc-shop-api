@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RipperdocShop.Api.Modules.Brands.Commands;
 using RipperdocShop.Api.Modules.Brands.Queries;
 using RipperdocShop.Shared.DTOs;
+using RipperdocShop.Shared.DTOs.Brands;
 
 namespace RipperdocShop.Api.Modules.Brands.Admin;
 

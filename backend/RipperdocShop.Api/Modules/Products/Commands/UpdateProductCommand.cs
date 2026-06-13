@@ -1,6 +1,7 @@
 using RipperdocShop.Api.Data;
 using RipperdocShop.Api.Models.Entities;
 using RipperdocShop.Shared.DTOs;
+using RipperdocShop.Shared.DTOs.Products;
 
 namespace RipperdocShop.Api.Modules.Products.Commands;
 

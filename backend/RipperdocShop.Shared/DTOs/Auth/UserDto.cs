@@ -1,4 +1,4 @@
-namespace RipperdocShop.Shared.DTOs;
+namespace RipperdocShop.Shared.DTOs.Auth;
 
 public class UserDto
 {

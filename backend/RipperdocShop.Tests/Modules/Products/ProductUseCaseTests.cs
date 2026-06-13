@@ -4,6 +4,7 @@ using RipperdocShop.Api.Models.Entities;
 using RipperdocShop.Api.Modules.Products.Commands;
 using RipperdocShop.Api.Modules.Products.Queries;
 using RipperdocShop.Shared.DTOs;
+using RipperdocShop.Shared.DTOs.Products;
 using RipperdocShop.Tests.TestUtils;
 
 namespace RipperdocShop.Tests.Modules.Products;

@@ -1,4 +1,4 @@
-namespace RipperdocShop.Shared.DTOs;
+namespace RipperdocShop.Shared.DTOs.Products;
 
 public class ProductCreateDto
 {

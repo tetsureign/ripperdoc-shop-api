@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using RipperdocShop.Api.Modules.Ratings.Commands;
 using RipperdocShop.Api.Modules.Ratings.Queries;
 using RipperdocShop.Shared.DTOs;
+using RipperdocShop.Shared.DTOs.Ratings;
+
 // ReSharper disable ConvertToPrimaryConstructor
 
 namespace RipperdocShop.Api.Modules.Ratings.Customer;

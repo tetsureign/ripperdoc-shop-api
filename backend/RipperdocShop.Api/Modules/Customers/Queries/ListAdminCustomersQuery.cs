@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using RipperdocShop.Api.Data;
 using RipperdocShop.Api.Modules.Customers.Admin;
 using RipperdocShop.Shared.DTOs;
+using RipperdocShop.Shared.DTOs.Auth;
 
 namespace RipperdocShop.Api.Modules.Customers.Queries;
 

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using RipperdocShop.Api.Models.Identities;
 using RipperdocShop.Shared.DTOs;
+using RipperdocShop.Shared.DTOs.Auth;
 
 namespace RipperdocShop.Api.Modules.Auth.Commands;
 

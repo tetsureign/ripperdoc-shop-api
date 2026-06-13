@@ -1,4 +1,7 @@
-namespace RipperdocShop.Shared.DTOs;
+using RipperdocShop.Shared.DTOs.Brands;
+using RipperdocShop.Shared.DTOs.Categories;
+
+namespace RipperdocShop.Shared.DTOs.Products;
 
 public class ProductDto
 {

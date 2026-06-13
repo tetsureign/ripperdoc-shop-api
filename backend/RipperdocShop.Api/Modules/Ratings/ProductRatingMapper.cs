@@ -1,5 +1,6 @@
 using RipperdocShop.Api.Models.Entities;
 using RipperdocShop.Shared.DTOs;
+using RipperdocShop.Shared.DTOs.Ratings;
 
 namespace RipperdocShop.Api.Modules.Ratings;
 

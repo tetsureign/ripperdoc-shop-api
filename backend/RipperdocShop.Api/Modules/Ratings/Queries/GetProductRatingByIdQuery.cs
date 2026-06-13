@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using RipperdocShop.Api.Data;
 using RipperdocShop.Shared.DTOs;
 using RipperdocShop.Api.Modules.Ratings;
+using RipperdocShop.Shared.DTOs.Ratings;
 
 namespace RipperdocShop.Api.Modules.Ratings.Queries;
 

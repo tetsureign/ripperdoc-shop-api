@@ -2,6 +2,7 @@ using RipperdocShop.Api.Models.Entities;
 using RipperdocShop.Api.Modules.Brands;
 using RipperdocShop.Api.Modules.Categories;
 using RipperdocShop.Shared.DTOs;
+using RipperdocShop.Shared.DTOs.Products;
 
 namespace RipperdocShop.Api.Modules.Products;
 

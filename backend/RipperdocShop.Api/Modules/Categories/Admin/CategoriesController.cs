@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RipperdocShop.Api.Modules.Categories.Commands;
 using RipperdocShop.Api.Modules.Categories.Queries;
 using RipperdocShop.Shared.DTOs;
+using RipperdocShop.Shared.DTOs.Categories;
 
 namespace RipperdocShop.Api.Modules.Categories.Admin;
 

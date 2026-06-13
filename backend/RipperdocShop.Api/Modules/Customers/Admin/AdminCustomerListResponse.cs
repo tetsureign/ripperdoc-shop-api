@@ -1,4 +1,5 @@
 using RipperdocShop.Shared.DTOs;
+using RipperdocShop.Shared.DTOs.Auth;
 
 namespace RipperdocShop.Api.Modules.Customers.Admin;
 

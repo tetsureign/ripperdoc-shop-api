@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using RipperdocShop.Shared.DTOs;
+using RipperdocShop.Shared.DTOs.Auth;
 
 namespace RipperdocShop.Api.Modules.Auth.Queries;
 

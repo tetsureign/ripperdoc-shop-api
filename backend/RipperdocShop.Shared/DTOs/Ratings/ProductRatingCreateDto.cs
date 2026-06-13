@@ -1,13 +1,10 @@
-namespace RipperdocShop.Shared.DTOs;
+namespace RipperdocShop.Shared.DTOs.Ratings;
 
-public class ProductRatingDto
+public class ProductRatingCreateDto
 {
-    public Guid Id { get; set; }
     public int Score { get; set; }
 
     public string? Comment { get; set; }
 
     public string ProductSlug { get; set; } = string.Empty;
-
-    public Guid UserId { get; set; }
 }

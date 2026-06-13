@@ -1,4 +1,4 @@
-namespace RipperdocShop.Shared.DTOs;
+namespace RipperdocShop.Shared.DTOs.Categories;
 
 public class PaginatedCategoryResponse
 {

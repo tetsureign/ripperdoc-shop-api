@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using RipperdocShop.Api.Data;
 using RipperdocShop.Shared.DTOs;
 using RipperdocShop.Api.Modules.Categories;
+using RipperdocShop.Shared.DTOs.Categories;
 
 namespace RipperdocShop.Api.Modules.Categories.Queries;
 

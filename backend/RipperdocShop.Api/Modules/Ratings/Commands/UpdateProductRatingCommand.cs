@@ -3,6 +3,7 @@ using RipperdocShop.Api.Data;
 using RipperdocShop.Api.Models.Entities;
 using RipperdocShop.Api.Modules.Customers.Queries;
 using RipperdocShop.Shared.DTOs;
+using RipperdocShop.Shared.DTOs.Ratings;
 
 namespace RipperdocShop.Api.Modules.Ratings.Commands;
 

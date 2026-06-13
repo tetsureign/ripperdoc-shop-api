@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RipperdocShop.Api.Modules.Auth.Commands;
 using RipperdocShop.Api.Modules.Auth.Queries;
 using RipperdocShop.Shared.DTOs;
+using RipperdocShop.Shared.DTOs.Auth;
 
 namespace RipperdocShop.Api.Modules.Auth;
 
